@@ -15,12 +15,12 @@ class Main extends React.Component {
             .then(data => this.setState({movies: data.Search}))
     };
 
-    searchMovies = (str) => {
-        fetch(`http://www.omdbapi.com/?apikey=6e1488e9&s=${str}`)
+    searchMovies = (str = 'matrix', type = 'all') => {
+        fetch(`http://www.omdbapi.com/?apikey=6e1488e9&s=${str !== '' ? str : 'matrix'}${type !== 'all' ?`&type=${type}`:''}`)
             .then(response => response.json())
-            .then(data => this.setState({movies: data.Search}))
+             .then(data => this.setState({movies: data.Search}))
 
-    }
+    };
 
 
     render() {
