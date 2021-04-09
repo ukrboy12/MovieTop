@@ -3,33 +3,36 @@ import {MovieList} from '../component/MovieList';
 import {Preloader} from '../component/Preloader';
 import {Search} from '../component/Search';
 
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 class Main extends React.Component {
     state = {
-        movies: []
+        movies: [],
+        loading: true
     };
 
     componentDidMount() {
-        fetch(`http://www.omdbapi.com/?apikey=6e1488e9&s=matrix`)
+        fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=matrix`)
             .then(response => response.json())
-            .then(data => this.setState({movies: data.Search}))
+            .then(data => this.setState({movies: data.Search, loading: false}))
     };
 
     searchMovies = (str = 'matrix', type = 'all') => {
-        fetch(`http://www.omdbapi.com/?apikey=6e1488e9&s=${str !== '' ? str : 'matrix'}${type !== 'all' ?`&type=${type}`:''}`)
+        this.setState({loading: true})
+        fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${str !== '' ? str : 'matrix'}${type !== 'all' ?`&type=${type}`:''}`)
             .then(response => response.json())
-             .then(data => this.setState({movies: data.Search}))
+             .then(data => this.setState({movies: data.Search, loading: false}))
 
     };
 
 
     render() {
-        const {movies} = this.state;
+        const {movies, loading} = this.state;
 
         return <main className='container content'>
             <Search searchMovies = {this.searchMovies}/>
             {
-                movies.length ? (<MovieList  movies = {this.state.movies}/>) :
+                !loading ? (<MovieList  movies = {movies}/>) :
                     <Preloader/>
             }
 
